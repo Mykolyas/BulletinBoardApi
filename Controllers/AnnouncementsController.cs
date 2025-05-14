@@ -2,6 +2,7 @@
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -21,7 +22,7 @@ namespace BulletinBoardApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] string? category = null, [FromQuery] string? subcategory = null)
         {
             var announcements = new List<Announcement>();
 
@@ -30,6 +31,10 @@ namespace BulletinBoardApi.Controllers
             {
                 CommandType = CommandType.StoredProcedure
             };
+
+            // Додаємо параметри до запиту
+            cmd.Parameters.AddWithValue("@Category", (object?)category ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@SubCategory", (object?)subcategory ?? DBNull.Value);
 
             await conn.OpenAsync();
             using var reader = await cmd.ExecuteReaderAsync();
@@ -50,6 +55,7 @@ namespace BulletinBoardApi.Controllers
 
             return Ok(announcements);
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
