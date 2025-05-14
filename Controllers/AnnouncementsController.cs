@@ -12,7 +12,7 @@ namespace BulletinBoardApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AnnouncementsController : ControllerBase
+    public class AnnouncementsController : Controller
     {
         private readonly IConfiguration _configuration;
 
@@ -89,6 +89,27 @@ namespace BulletinBoardApi.Controllers
 
             return NotFound();
         }
+
+        [HttpGet("subcategories")]
+        public IActionResult GetSubcategories([FromQuery] string category)
+        {
+            var subcategoriesByCategory = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase)
+            {
+        { "Побутова техніка", new List<string> { "Холодильники", "Пральні машини", "Бойлери", "Печі", "Витяжки", "Мікрохвильові печі" } },
+        { "Комп'ютерна техніка", new List<string> { "ПК", "Ноутбуки", "Монітори", "Принтери", "Сканери" } },
+        { "Смартфони", new List<string> { "Android смартфони", "iOS/Apple смартфони" } },
+        { "Інше", new List<string> { "Одяг", "Взуття", "Аксесуари", "Спортивне обладнання", "Іграшки" } }
+            };
+
+            if (string.IsNullOrWhiteSpace(category) || !subcategoriesByCategory.ContainsKey(category))
+            {
+                return Json(new List<string>());
+            }
+
+            return Json(subcategoriesByCategory[category]);
+        }
+
+
 
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] Announcement announcement)
