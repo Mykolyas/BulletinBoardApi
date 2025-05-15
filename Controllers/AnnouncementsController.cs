@@ -1,5 +1,6 @@
 ﻿using BulletinBoardApi.Models;
 using Dapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
+
 
 namespace BulletinBoardApi.Controllers
 {
@@ -110,7 +112,7 @@ namespace BulletinBoardApi.Controllers
         }
 
 
-
+        //[Authorize]
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] Announcement announcement)
         {
@@ -132,6 +134,7 @@ namespace BulletinBoardApi.Controllers
             return Ok("Added successfully");
         }
 
+        //[Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAnnouncement(int id, [FromBody] Announcement announcement)
         {
@@ -152,6 +155,7 @@ namespace BulletinBoardApi.Controllers
             }
         }
 
+        //[Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAnnouncement(int id)
         {
